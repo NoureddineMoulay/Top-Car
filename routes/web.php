@@ -1,13 +1,12 @@
 <?php
 
+use App\Http\Controllers\BookingController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CarController;
 
-Route::get('/', function () {
-    return view('pages.index');
-})->name('home');
+Route::get('/', [CarController::class, 'home'])->name('home');
 
 Route::get('/dashboard', function () {
     return view('dashboard');
@@ -23,6 +22,13 @@ Route::middleware('auth')->group(function () {
     Route::delete('/cars/{car}', [CarController::class, 'destroy'])->name('cars.destroy');
     Route::put('/cars/{car}', [CarController::class, 'update'])->name('cars.update');
     Route::get('/users', [UserController::class, 'index'])->name('users.index');
+    Route::get('/show/{car}', [CarController::class, 'show'])->name('cars.show');
+    Route::get('/reserve', [BookingController::class, 'index'])->name('bookings.index');
+    Route::get('/reserve/{car}', [BookingController::class, 'create'])->name('bookings.create');
+    Route::post('/reserve', [BookingController::class, 'store'])->name('bookings.store');
+
+
+
 
 
 });

@@ -15,7 +15,7 @@ class CreateBookingsTable extends Migration
             $table->date('start_date');
             $table->date('end_date');
             $table->decimal('total_price', 8, 2);
-            $table->enum('status', ['pending', 'confirmed', 'completed', 'cancelled']);
+            $table->enum('status', ['pending', 'confirmed', 'completed', 'cancelled'])->default('pending');
             $table->timestamps();
         });
     }

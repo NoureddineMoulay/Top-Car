@@ -24,6 +24,7 @@
                     <th>Price for Rental</th>
                     <th>Status</th>
                     <th>Number of Seats</th>
+                    <TH>Location</TH>
                     <th>Fuel</th>
                     <th>Transmission</th>
                     <th>Consumption</th>
@@ -42,6 +43,7 @@
                         <td>{{ $car->rental_price_per_day }}</td>
                         <td>{{ $car->status }}</td>
                         <td>{{ $car->number_of_seats }}</td>
+                        <td>{{$car->location}}</td>
                         <td>{{ $car->fuel_type }}</td>
                         <td>{{ $car->transmission }}</td>
                         <td>{{ $car->consumption }}</td>
@@ -79,6 +81,14 @@
             <div class="input-box">
                 <span><i class="fa-solid fa-calendar"></i></span>
                 <input type="number" id="year" name="year" placeholder="Year" required>
+            </div>
+            <div class="input-box">
+                <span><i class="fa-solid fa-location"></i></span>
+                <input type="text" id="location" name="location" placeholder="location" required>
+            </div>
+            <div class="input-box">
+                <span><i class="fa-solid fa-location"></i></span>
+                <input type="text" id="description" name="description" placeholder="description" required>
             </div>
             <div class="input-box">
                 <span><i class="fa-solid fa-image"></i></span>

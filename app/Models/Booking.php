@@ -15,5 +15,13 @@ class Booking extends Model
         'total_price',
         'status', // 'pending', 'confirmed', 'completed', 'cancelled'
     ];
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+    public function car()
+    {
+        return $this->belongsTo(Car::class);
+    }
 }
 

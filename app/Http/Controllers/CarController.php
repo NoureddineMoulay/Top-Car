@@ -8,6 +8,12 @@ use Illuminate\Http\Request;
 class CarController extends Controller
 {
     // Display a listing of the resource
+    public function home()
+    {
+        $cars = Car::all();
+        return view('pages.index', compact('cars'));
+    }
+
     public function index()
     {
         $cars = Car::all();
@@ -61,7 +67,10 @@ class CarController extends Controller
     // Display the specified resource
     public function show(Car $car)
     {
-        return view('cars.show', compact('car'));
+        // Get similar cars, this is just an example, adjust the query as needed
+        $similarCars = Car::where('location', $car->location)->where('id', '!=', $car->id)->get();
+
+        return view('cars.show', compact('car', 'similarCars'));
     }
 
     // Show the form for editing the specified resource

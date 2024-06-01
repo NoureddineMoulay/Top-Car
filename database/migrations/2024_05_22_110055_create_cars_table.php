@@ -13,6 +13,8 @@
                 $table->string('make');
                 $table->string('model');
                 $table->year('year');
+                $table->string('location');
+                $table->string('description')->nullable();
                 $table->string('car_image')->nullable();
                 $table->decimal('rental_price_per_day', 8, 2);
                 $table->enum('status', ['available', 'rented', 'maintenance'])->default('available');
