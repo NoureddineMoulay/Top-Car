@@ -23,6 +23,74 @@ for (let i = 0; i < navbarLinks.length; i++) {
 }
 
 
+// notification drop down //
+
+
+
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    const bellIcon = document.querySelector('.notifications .fa-bell');
+    const dropdown = document.querySelector('.notification-dropdown');
+
+    if (bellIcon && dropdown) {
+        // Toggle the dropdown when the bell icon is clicked
+        bellIcon.addEventListener('click', function(event) {
+            dropdown.classList.toggle('show');
+            event.stopPropagation(); // Prevent click event from bubbling up to window
+        });
+
+        // Close the dropdown if the user clicks outside of it
+        window.addEventListener('click', function(event) {
+            if (!bellIcon.contains(event.target) && !dropdown.contains(event.target)) {
+                dropdown.classList.remove('show');
+
+                // Mark notifications as read when closing the dropdown
+                fetch("{{ route('notifications.markAsRead') }}", {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Content-Type': 'application/json'
+                    }
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json(); // Parse the JSON
+                    })
+                    .then(data => {
+                        console.log('Response:', data); // Log the response
+                        if (data.success) {
+                            const bell = document.querySelector('.has-notifications');
+                            if (bell) {
+                                bell.classList.remove('has-notifications');
+                            }
+                            const notificationCount = document.querySelector('.notification-count');
+                            if (notificationCount) {
+                                notificationCount.style.display = 'none';
+                            }
+                        } else {
+                            throw new Error('Marking notifications as read failed');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+            }
+        });
+    } else {
+        console.error('Bell icon or dropdown not found');
+    }
+});
+
+
+
+
+
+
+
+
 
 /**
  * header active on scroll

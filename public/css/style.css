@@ -1540,3 +1540,221 @@ button, a { transition: var(--transition); }
     display:flex;
     justify-content: center;
 }
+
+.profile-notif{
+    display: flex;
+    width: 100%;
+    height: 100%;
+    flex-direction: row-reverse;
+    align-items: center;
+    justify-content: space-evenly;
+    color:var(--grey-text);
+}
+.profile-notif img{
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    margin: 0 10px;
+
+}
+.profile-notif span{
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    color: var(--grey-text) ;
+
+}
+.profile-notif p{
+    font-size: 15px;
+}
+.profile-notif .arrow {
+    font-size: 11px;
+}
+.List-container {
+    grid-column: 2 / span 3;
+    padding:0 20px 20px 20px;
+    font-family: "DM Sans",sans-serif;
+}
+.list{
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    border: 1.5px solid #f6f6f6;
+}
+.filter-buttons {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    justify-content: space-between;
+}
+
+.filter-buttons input {
+    outline: none;
+    height: 36px;
+    padding: 12px 0 12px 25px;
+    border-radius: 6px;
+    border: 1px solid #7d8693;
+}
+
+.filter-buttons .download-button {
+    background-color: var(--cherry) ;
+    border: none;
+    border-radius: 8px;
+    padding: 10px;
+    margin-left: 12px;
+    cursor: pointer;
+    color: white;
+    font-family: "DM Sans",sans-serif;
+}
+.dropdown {
+    display: inline-block;
+    position: relative;
+}
+
+.dd-button {
+    display: inline-block;
+    padding: 10px 30px 10px 0px;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.dd-button:after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    right: 15px;
+    transform: translateY(-50%);
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 5px solid var(--buttons);
+}
+
+.dd-button:hover +.dd-button:after {
+    border-top: 5px solid var(--hover);  }
+
+
+.dd-input {
+    display: none;
+}
+
+.dd-menu {
+    position: absolute;
+    top: 100%;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 0;
+    margin: 2px 0 0 0;
+    box-shadow: 0 0 6px 0 rgba(0,0,0,0.1);
+    background-color: #ffffff;
+    list-style-type: none;
+}
+
+.dd-input +.dd-menu {
+    display: none;
+}
+
+.dd-input:checked + .dd-menu {
+    display: block;
+}
+
+.dd-menu li {
+    padding: 10px 20px;
+    cursor: pointer;
+    white-space: nowrap;
+    text-decoration: none;
+    font-size: 14px;
+    color: #5c6676;
+}
+.dd-menu a:visited{
+    color: #5c6676;;
+}
+.dd-menu button{
+    border: none;
+    background-color: transparent;
+    font-size: 14px;
+    color: #5c6676;
+    cursor: pointer;
+}
+.dd-menu li:hover {
+    background-color: #f6f6f6;
+}
+
+
+.notifications {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+}
+
+.notifications .fa-bell {
+    position: relative;
+    font-size: 24px; /* Adjust size as necessary */
+}
+
+.notifications .notification-count {
+    background-color: var(--buttons);
+    border: none;
+    color: white;
+    border-radius: 50%;
+    position: absolute;
+    height: 14px;
+    width: 14px;
+    text-align: center;
+    font-size: 9px;
+    cursor: pointer;
+    left: 16px;
+    top: -2px;
+    font-weight: 600;
+
+}
+
+.notifications .has-notifications + .notification-count {
+    display: inline-block; /* Show when there are notifications */
+}
+
+.notification-dropdown {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 241px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+    left: -81px;
+    margin: 5px 0;
+}
+
+.notification-dropdown.show {
+    display: block;
+}
+
+.notification-dropdown ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.notification-dropdown ul li {
+    padding: 8px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+.notification-dropdown ul li:hover {
+    background-color: #ddd;
+}
+
+.notification-dropdown ul li a {
+    text-decoration: none;
+    color: black;
+}
+
+.notification-dropdown ul li small {
+    color: gray;
+}
+
+

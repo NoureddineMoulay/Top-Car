@@ -23,6 +23,7 @@
                     <td>{{ $booking->end_date }}</td>
                     <td>{{ $booking->total_price }}</td>
                     <td>{{ $booking->status }}</td>
+                    <td> <a href="{{ route('bookings.show', $booking->id) }}" class="btn btn-info">View Details</a></td>
                 </tr>
             @endforeach
             </tbody>

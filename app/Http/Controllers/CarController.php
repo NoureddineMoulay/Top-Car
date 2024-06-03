@@ -20,6 +20,33 @@ class CarController extends Controller
         return view('cars.index', compact('cars'));
     }
 
+    public function search(Request $request)
+    {
+        // Retrieve the search parameters
+        $brand = $request->input('brand');
+        $price = $request->input('price');
+        $location = $request->input('location');
+
+        // Query cars based on search parameters
+        $query = Car::query();
+
+        if ($brand) {
+            $query->where('make', 'like', "%$brand%");
+        }
+
+        if ($price) {
+            $query->where('rental_price_per_day', '<=', $price);
+        }
+
+        if ($location) {
+            $query->where('location', 'like', "%$location%");
+        }
+
+        $cars = $query->get();
+
+        // Redirect to a view with the search results
+        return view('cars.search-results', compact('cars'));
+    }
     // Show the form for creating a new resource
     public function create()
     {

@@ -1,7 +1,9 @@
 @extends('layouts.carh')
+
 @section('title')
     Car Details
 @endsection
+
 @section('content')
     <div class="container-show">
         <h2><a href="#">Our Cars</a></h2>
@@ -44,6 +46,14 @@
                 </div>
 
                 <div class="detail-box">
+                    <span class="detail-icon"><i class="fa-solid fa-gas-pump"></i></span>
+                    <div class="details-text">
+                        Fuel Type
+                        <p>{{ $car->fuel_type }}</p>
+                    </div>
+                </div>
+
+                <div class="detail-box">
                     <span class="detail-icon"><i class="fa-solid fa-tachometer-alt"></i></span>
                     <div class="details-text">
                         Consumption
@@ -56,13 +66,6 @@
                     <div class="details-text">
                         Transmission
                         <p>{{ $car->transmission }}</p>
-                    </div>
-                </div>
-                <div class="detail-box">
-                    <span class="detail-icon"><i class="fa-solid fa-cogs"></i></span>
-                    <div class="details-text">
-                        Brand
-                        <p>{{ $car->make }}</p>
                     </div>
                 </div>
 
@@ -81,37 +84,57 @@
                     </p>
                 </div>
                 <div class="customer-reviews">
-                    <h2>Customer reviews </h2>
-                        <div class="review-section">
-                            <div class="customer-details">
-                                <div class="customer-pic">
-                                    <img src="{{ asset('images/user.png') }}" alt="" style="height: 40px; width: 40px;">
+                    <h2>Customer Reviews</h2>
+                    @if ($car->reviews->count() > 0)
+                        @foreach ($car->reviews as $review)
+                            <div class="review-section">
+                                <div class="customer-details">
+                                    <div class="customer-pic">
+                                        <img src="{{ asset('images/user.png') }}" alt="User Avatar" style="height: 40px; width: 40px;">
+                                    </div>
+                                    <div class="username-stars">
+                                        <p>{{ $review->user->name }}</p>
+                                        @for ($i = 0; $i < $review->rating; $i++)
+                                            <span><i class="fa-solid fa-star"></i></span>
+                                        @endfor
+                                    </div>
                                 </div>
-                                <div class="username-stars">
-                                    <p>test</p>
-                                    <span><i class="fa-solid fa-star"></i></span>
+                                <div class="review-content">
+                                    {{ $review->comment }}
                                 </div>
+                                @if (auth()->id() === $review->user_id)
+                                    <form action="{{ route('reviews.destroy', $review) }}" method="POST">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-danger">Delete Review</button>
+                                    </form>
+                                @endif
                             </div>
-                            <div class="review-content">
-                               jfhjkdhfdhfefw
-                            </div>
-                        </div>
+                        @endforeach
+                    @else
+                        <p>No reviews yet.</p>
+                    @endif
 
                     <button class="see-allBtn">See all</button>
+
+                    <!-- Review Form -->
                     <div class="review-submit">
-                        <h2>Review</h2>
-                        <form class="review-form">
-                            <input type="text" placeholder="Your name" name="name">
-                            <input type="email" placeholder="Your email" name="email">
-                            <textarea placeholder="Enter description..." name="description"></textarea>
+                        <h2>Leave a Review</h2>
+                        <form action="{{ route('cars.reviews.store', $car) }}" method="POST" class="review-form">
+                            @csrf
+                            <input type="hidden" name="car_id" value="{{ $car->id }}">
+                            <input type="hidden" name="name" value="{{ Auth::user()->name }}">
+                            <input type="hidden" name="email" value="{{ Auth::user()->email }}">
+                            <textarea placeholder="Enter your review..." name="comment" required></textarea>
                             <div class="review-stars">
-                                <label>Review:</label>
-                                <input type="number" min="1" max="5" name="rating">
+                                <label>Rating (1-5):</label>
+                                <input type="number" min="1" max="5" name="rating" required>
                             </div>
-                            <button type="submit">Send review</button>
+                            <button type="submit">Submit Review</button>
                         </form>
                     </div>
                 </div>
+
             </div>
             <div class="reserve-btn">
                 <div class="btn-tite">

@@ -6,6 +6,7 @@ use App\Mail\BookingMade;
 use App\Models\Car;
 use App\Models\User;
 use App\Models\Booking;
+use App\Notifications\ReservationMade;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
@@ -17,6 +18,13 @@ class BookingController extends Controller
     {
         $bookings = Booking::where('user_id', Auth::id())->get();
         return view('bookings.index', compact('bookings'));
+    }
+
+
+    public function show($id)
+    {
+        $booking = Booking::with('car')->findOrFail($id);
+        return view('bookings.show', compact('booking'));
     }
     public function create(Car $car)
     {
@@ -48,6 +56,7 @@ class BookingController extends Controller
         $booking->status = 'pending';
         $booking->save();
         Mail::to('moulaynoureddinee@gmail.com')->send(new BookingMade($booking));
+        $user->notify(new ReservationMade($booking));
         // Redirect to the payment page (you need to define the payment route and page)
         return redirect()->route('bookings.index');    }
 }
