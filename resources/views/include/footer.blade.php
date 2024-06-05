@@ -5,7 +5,7 @@
 
         <div class="footer-brand">
           <a href="#" class="logo">
-            <img src="./assets/images/logo.svg" alt="Ridex logo">
+            <img src="{{asset('images/logo.png')}}" alt="Top Car logo" style="height:20px; margin-left:9px;">
           </a>
 
           <p class="footer-text">

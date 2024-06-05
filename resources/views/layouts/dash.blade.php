@@ -6,7 +6,9 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title')</title>
     <link rel="stylesheet" href="css/style_dash.css">
-
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -28,7 +30,8 @@
       </div>
       @yield('scripts')
      <script src="https://kit.fontawesome.com/a4038e236b.js" crossorigin="anonymous"></script>
-     <script src="/js/script.js"></script>
+     <script src="{{ asset('js/script.js') }}"></script>
 
-    </body>
+
+ </body>
 </html>

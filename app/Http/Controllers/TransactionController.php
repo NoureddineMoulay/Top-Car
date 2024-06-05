@@ -3,8 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Mail\BookingConfirmed;
+use App\Mail\BookingMade;
 use App\Models\Booking;
 use App\Models\Transaction;
+use Barryvdh\DomPDF\Facade; // Use alias 'PDF' for DomPDFuse Illuminate\Http\Request;
+
+use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
@@ -12,10 +17,21 @@ use Illuminate\Support\Facades\Mail;
 use Stripe\Stripe;
 use Stripe\Checkout\Session;
 use Stripe\Customer;
+use Illuminate\Support\Facades\Log; // Add this line
 use Stripe\Exception\ApiErrorException;
 
 class TransactionController extends Controller
 {
+
+
+    public function index()
+    {
+        // Retrieve all transactions from the database
+        $transactions = Transaction::all();
+
+        // Return the view with the transactions data
+        return view('transactions.index', compact('transactions'));
+    }
     /**
      * Create a Stripe Checkout session for payment.
      *
@@ -23,6 +39,9 @@ class TransactionController extends Controller
      * @return \Illuminate\Http\RedirectResponse
      * @throws ApiErrorException
      */
+
+
+
     public function createCheckoutSession(Request $request)
     {
         $request->validate([
@@ -61,7 +80,7 @@ class TransactionController extends Controller
 
             return redirect()->away($session->url);
         } catch (ApiErrorException $e) {
-            \Log::error('Error creating Stripe session: ' . $e->getMessage());
+            Log::error('Error creating Stripe session: ' . $e->getMessage());
             return back()->with('error', 'Error creating Stripe session: ' . $e->getMessage());
         }
     }
@@ -79,20 +98,20 @@ class TransactionController extends Controller
         try {
             $sessionId = $request->get('session_id');
             if (!$sessionId) {
-                \Log::error('Session ID missing.');
+                Log::error('Session ID missing.');
                 return redirect()->route('home')->with('error', 'Session ID missing.');
             }
 
             $session = Session::retrieve($sessionId);
-            \Log::info('Session data: ' . json_encode($session));
+            Log::info('Session data: ' . json_encode($session));
 
             if (!isset($session->customer) || !$session->customer) {
-                \Log::error('Customer ID is missing in the session.');
+                Log::error('Customer ID is missing in the session.');
                 return redirect()->route('home')->with('error', 'Customer ID is missing in the session.');
             }
 
             $customer = \Stripe\Customer::retrieve($session->customer);
-            \Log::info('Customer data: ' . json_encode($customer));
+            Log::info('Customer data: ' . json_encode($customer));
 
             $user = Auth::user();
             $booking = Booking::where('user_id', $user->id)->latest()->first();
@@ -100,6 +119,12 @@ class TransactionController extends Controller
             // Mark booking as paid and confirmed
             $booking->status = 'confirmed';
             $booking->save();
+            $car = $booking->car;
+            $car->status = 'rented'; // or whatever status you use to represent "rented"
+            $car->save();
+            // Convert dates to Carbon instances
+            $booking->start_date = Carbon::parse($booking->start_date);
+            $booking->end_date = Carbon::parse($booking->end_date);
 
             // Create transaction record
             Transaction::create([
@@ -111,15 +136,24 @@ class TransactionController extends Controller
                 'payment_method' => 'stripe',
             ]);
 
-            // Send confirmation email
-            Mail::to($user->email)->send(new BookingConfirmed($booking));
+            // Generate PDF invoice using Snappy
+            $pdf = PDF::loadView('invoice', ['booking' => $booking]);
 
+            // Save the PDF temporarily
+            $pdfPath = storage_path('app/public/invoice_' . $booking->id . '.pdf');
+            $pdf->save($pdfPath);
+
+            // Send confirmation email with PDF attachment
+            Mail::to($user->email)->send(new BookingMade($booking, $pdfPath));
+
+            // Return the success view with a flag to trigger the download
             return view('transactions.success', [
                 'customer' => $customer,
                 'booking' => $booking,
+                'pdfPath' => asset('storage/invoice_' . $booking->id . '.pdf'), // pass the URL of the PDF
             ]);
         } catch (\Exception $e) {
-            \Log::error('Error in success method: ' . $e->getMessage());
+            Log::error('Error in success method: ' . $e->getMessage());
             return redirect()->route('home')->with('error', 'Error retrieving session: ' . $e->getMessage());
         }
     }

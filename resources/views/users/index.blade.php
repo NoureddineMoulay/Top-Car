@@ -1,5 +1,5 @@
 @extends('layouts.dash')
-@section('title', 'Dashboard | Admin')
+@section('title', 'Dashboard | Users')
 @section('content')
     <div class="filter-buttons">
         <div class="title">
@@ -28,18 +28,21 @@
         @foreach($users as $user)
             <tr>
                 <td>{{ $user->id }}</td>
-                <td>{{ $user->name }}</td>
+                <td>{{ ucfirst($user->name) }}</td>
                 <td>{{ $user->email }}</td>
                 <td>{{ ucfirst($user->role) }}</td>
                 <td>{{ $user->phone_number }}</td>
                 <td>{{ $user->address }}</td>
                 <td>
+
+                        @if($user->role!='admin')
                     <form action="{{ route('users.destroy', $user->id) }}" method="POST" style="display:inline;">
                         @csrf
                         @method('DELETE')
-                        <button type="submit"><i class="fa-solid fa-trash-can"></i></button>
+                        <button type="submit" class="btnsEd"><i class="fa-solid fa-trash-can"></i></button>
                     </form>
-                    <button class="edit-button"
+                    @endif
+                    <button class="edit-button btnsEd"
                             data-id="{{ $user->id }}"
                             data-name="{{ $user->name }}"
                             data-email="{{ $user->email }}"

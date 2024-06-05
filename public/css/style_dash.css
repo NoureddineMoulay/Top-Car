@@ -1,8 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,100..900;1,100..900&family=Rubik:ital,wght@0,300..900;1,300..900&display=swap');
-@font-face {
-    font-family:"Helvetica";
-    src: url(Fonts/HelveticaNeueLight.otf);
-}
+
 *{
     padding: 0;
     margin: 0;
@@ -19,7 +16,7 @@
 }
 body{
     height: 100vh;
-    font-family: "Roboto Slab" ,serif;
+    font-family: "Figtree" ,serif;
     background-color: #FEFEFE;
 }
 .logo {
@@ -42,7 +39,7 @@ body{
 .asidebar-container{
     display: flex;
     flex-direction: column;
-    background-color: #EBE9E933;
+    background-color: #EDEDED33;
     width: 70px;
     height: 100%;
     padding: 5px;
@@ -62,6 +59,12 @@ aside ul{
     justify-content: space-between;
     height: 224px;
     font-size: 13px;
+    color: var(--grey-text);
+}
+aside a{
+    text-decoration:none;
+}
+aside a:visited {
     color: var(--grey-text);
 }
 .active{
@@ -88,6 +91,7 @@ aside .icons{
    justify-content: center;
    align-items: center;
    cursor: pointer;
+    border-radius: 50%;
 
 }
 .head-container nav{
@@ -152,7 +156,7 @@ nav .input-search{
 .List-container {
     grid-column: 2 / span 3;
     padding:0 20px 20px 20px;
-    font-family: "DM Sans",sans-serif;
+    font-family: "Figtree" ,serif;
 }
 .list{
     background-color: white;
@@ -183,7 +187,7 @@ nav .input-search{
     margin-left: 12px;
     cursor: pointer;
     color: white;
-    font-family: "Roboto Slab",Serif;
+    font-family: "Figtree" ,serif;
 }
 
 .table {
@@ -338,7 +342,7 @@ nav .input-search{
   position: relative;
   border: 1px solid white;
   box-shadow: var(--shadow-1);
-  font-family: "Roboto Slab",serif;
+  font-family: "Figtree" ,serif;
   top: -146px;
   margin: 15% auto; /* 15% from the top and centered */
   }
@@ -347,8 +351,8 @@ nav .input-search{
       flex-direction: column;
       justify-content: space-evenly;
       align-items: center;
-      height: 80%;
-      font-family: "Roboto Slab",serif;
+      height: 90%;
+      font-family: "Figtree" ,serif;
 
   }
   #close-icon ,#editCloseIcon{
@@ -385,7 +389,7 @@ nav .input-search{
     font-weight: 400;
     padding: 0 35px 0 5px;
     font-size: 15px;
-    font-family: "Roboto Slab",serif;
+    font-family: "Figtree" ,serif;
 }
   .form-body .input-box span{
       position: absolute;
@@ -404,7 +408,7 @@ nav .input-search{
     border-radius: 6px;
     color:#ffff;
     font-size: 15px ;
-    font-family: "Roboto Slab",serif;
+      font-family: "Figtree" ,serif;
 }
 .form-body .btn:hover{
     background-color: var(--hover);
@@ -438,4 +442,138 @@ nav .input-search{
     color: black;
     text-decoration: none;
     cursor: pointer;
+}
+
+.notifications {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+}
+
+.notifications .fa-bell {
+    position: relative;
+    font-size: 24px; /* Adjust size as necessary */
+}
+
+.notifications .notification-count {
+    background-color: var(--cherry);
+    border: none;
+    color: white;
+    border-radius: 50%;
+    position: absolute;
+    height: 14px;
+    width: 14px;
+    text-align: center;
+    font-size: 9px;
+    cursor: pointer;
+    left: 16px;
+    top: -2px;
+    font-weight: 600;
+
+}
+
+.notifications .has-notifications + .notification-count {
+    display: inline-block; /* Show when there are notifications */
+}
+
+.notification-dropdown {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 241px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+    left: -81px;
+    margin: 5px 0;
+    font-size:12px;
+}
+
+.notification-dropdown.show {
+    display: block;
+}
+
+.notification-dropdown ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.notification-dropdown ul li {
+    padding: 8px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+.notification-dropdown ul li:hover {
+    background-color: #ddd;
+}
+
+.notification-dropdown ul li a {
+    text-decoration: none;
+    color: black;
+}
+
+.notification-dropdown ul li small {
+    color: gray;
+}
+
+.btnsEd{
+    color: white;
+    background: var(--cherry);
+    border: none;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+}
+
+
+.welcome-message {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.dashboard-summary {
+    display: flex;
+    justify-content: space-around;
+    margin: 0 auto;
+    max-width: 1200px;
+}
+
+.summary-box {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    text-align: center;
+    width: 23%;
+}
+
+.summary-box .box-content {
+    position: relative;
+}
+
+.summary-box span {
+    font-size: 1.2em;
+    color: #666;
+}
+
+.summary-box h3 {
+    font-size: 2.5em;
+    margin: 10px 0;
+    color: #333;
+}
+
+.summary-box .box-icon {
+    position: absolute;
+    top: 67%;
+    right: 10%;
+    transform: translateY(-50%);
+    font-size: 2.5em;
+    color: var(--cherry);
+}
+
+.chart-container {
+    width: 80%;
+    margin: 50px auto;
 }

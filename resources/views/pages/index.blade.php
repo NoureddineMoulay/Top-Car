@@ -12,17 +12,17 @@
                     <p class="hero-text">Live in New York, New Jersey, and Connecticut!</p>
                 </div>
                 <div class="hero-banner"></div>
-                <form action="" class="hero-form">
+                <form action="{{ route('cars.search') }}" method="GET" class="hero-form">
                     <div class="input-wrapper">
-                        <input type="text" name="car-model" id="input-1" class="input-field" placeholder="Brand">
+                        <input type="text" name="brand" id="input-1" class="input-field" placeholder="Brand">
                         <span><i class="fa-solid fa-car"></i></span>
                     </div>
                     <div class="input-wrapper">
-                        <input type="text" name="dayly-pay" id="input-2" class="input-field" placeholder="Price">
+                        <input type="text" name="price" id="input-2" class="input-field" placeholder="Price">
                         <span><i class="fa-solid fa-dollar-sign"></i></span>
                     </div>
                     <div class="input-wrapper">
-                        <input type="text" name="year" id="input-3" class="input-field" placeholder="Location">
+                        <input type="text" name="location" id="input-3" class="input-field" placeholder="Location">
                         <span><i class="fa-solid fa-location-dot"></i></span>
                     </div>
                     <button type="submit" class="btn">Search</button>
@@ -55,9 +55,9 @@
                 <ul class="featured-car-list">
                     @foreach($cars as $car)
                         <li>
-                            <div class="featured-car-card">
+                            <div class="featured-car-card {{ $car->status != 'available' ? 'low-opacity' : '' }}">
                                 <figure class="card-banner">
-                                    <img src="{{ asset('storage/' . $car->car_image) }}" alt="{{ $car->model }}" loading="lazy" width="440" height="300" class="w-100">
+                                    <img src="{{ asset($car->first_image()->image_path) }}" alt="{{ $car->model }}" loading="lazy" width="440" height="300" class="w-100">
                                 </figure>
                                 <div class="card-content">
                                     <div class="card-title-wrapper">

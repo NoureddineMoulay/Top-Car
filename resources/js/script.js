@@ -90,3 +90,6 @@ function animateCarousel(timestamp) {
 
 let lastTimestamp = null;
 requestAnimationFrame(animateCarousel);
+
+
+

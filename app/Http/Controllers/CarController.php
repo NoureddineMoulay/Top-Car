@@ -3,25 +3,56 @@
 namespace App\Http\Controllers;
 
 use App\Models\Car;
+use App\Models\CarImage;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class CarController extends Controller
 {
+
+
     // Display a listing of the resource
     public function home()
     {
         $cars = Car::all();
         return view('pages.index', compact('cars'));
     }
+   public function allCars(Request $request){
+           $query = Car::query();
 
+           if ($request->filled('seats')) {
+               $query->where('number_of_seats', $request->seats);
+           }
+
+           if($request->filled('status')){
+               $query->where('status', $request->status);
+
+           }
+
+           if ($request->filled('fuel')) {
+               $query->where('fuel_type', $request->fuel);
+           }
+
+           if ($request->filled('transmission')) {
+               $query->where('transmission', $request->transmission);
+           }
+
+           if ($request->filled('year')) {
+               $query->where('year', $request->year);
+           }
+
+           $cars = $query->get();
+
+           return view('cars.allcars', compact('cars'));
+    }
     public function index()
     {
-        $cars = Car::all();
+        $cars = Car::with('car_images')->get();
         return view('cars.index', compact('cars'));
     }
 
     public function search(Request $request)
-    {
+    {  Log::info('Search method called');
         // Retrieve the search parameters
         $brand = $request->input('brand');
         $price = $request->input('price');
@@ -56,8 +87,6 @@ class CarController extends Controller
     // Store a newly created resource in storage
     public function store(Request $request)
     {
-        \Log::info('Store Car Request: ', $request->all());
-
         $request->validate([
             'make' => 'required',
             'model' => 'required',
@@ -68,23 +97,35 @@ class CarController extends Controller
             'transmission' => 'required|in:automatic,manual',
             'fuel_type' => 'required|in:gazoil,petrol,electric,hybrid',
             'consumption' => 'required|numeric',
-            'car_image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'car_images.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
-        \Log::info('Validation passed.');
+        // Create the car
+        $car = Car::create([
+            'make' => $request->make,
+            'model' => $request->model,
+            'year' => $request->year,
+            'rental_price_per_day' => $request->rental_price_per_day,
+            'status' => $request->status,
+            'number_of_seats' => $request->number_of_seats,
+            'transmission' => $request->transmission,
+            'fuel_type' => $request->fuel_type,
+            'consumption' => $request->consumption,
+            'location'=>$request->location,
+            'description'=>$request->description,
+        ]);
 
-        if ($request->hasFile('car_image')) {
-            \Log::info('File is present.');
-            $imagePath = $request->file('car_image')->store('car_images','public');
-            \Log::info('Image Path: ' . $imagePath);
+        // Upload and store images
+        if ($request->hasFile('car_images')) {
+            foreach ($request->file('car_images') as $image) {
+                $imageName = time() . '_' . $image->getClientOriginalName();
+                $image->storeAs('public/car_images', $imageName);
 
-            $data = $request->all();
-            $data['car_image'] = $imagePath;
-
-            $car = Car::create($data);
-            \Log::info('Car created with ID: ' . $car->id);
-        } else {
-            \Log::info('File is not present.');
+                CarImage::create([
+                    'car_id' => $car->id,
+                    'image_path' => 'storage/car_images/' . $imageName,
+                ]);
+            }
         }
 
         return redirect()->route('cars.index')->with('success', 'Car created successfully.');
@@ -107,41 +148,48 @@ class CarController extends Controller
     }
 
     // Update the specified resource in storage
-    public function update(Request $request, $id)
+    public function update(Request $request, Car $car)
     {
-        $car = Car::findOrFail($id);
-
         $request->validate([
             'make' => 'required|string|max:255',
             'model' => 'required|string|max:255',
             'year' => 'required|integer',
-            'car_image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'rental_price_per_day' => 'required|numeric',
-            'number_of_seats' => 'required|integer',
             'status' => 'required|string',
-            'fuel_type' => 'required|string',
+            'number_of_seats' => 'required|integer',
             'transmission' => 'required|string',
+            'fuel_type' => 'required|string',
             'consumption' => 'required|numeric',
+            'car_images.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
-        if ($request->hasFile('car_image')) {
-            $imagePath = $request->file('car_image')->store('car_images', 'public');
-            $car->car_image = $imagePath;
+        // Update the car details
+        $car->update([
+            'make' => $request->make,
+            'model' => $request->model,
+            'year' => $request->year,
+            'rental_price_per_day' => $request->rental_price_per_day,
+            'status' => $request->status,
+            'number_of_seats' => $request->number_of_seats,
+            'transmission' => $request->transmission,
+            'fuel_type' => $request->fuel_type,
+            'consumption' => $request->consumption,
+        ]);
+
+        // Upload and store new images
+        if ($request->hasFile('car_images')) {
+            foreach ($request->file('car_images') as $image) {
+                $imageName = time() . '_' . $image->getClientOriginalName();
+                $image->storeAs('public/car_images', $imageName);
+
+                CarImage::create([
+                    'car_id' => $car->id,
+                    'image_path' => 'storage/car_images/' . $imageName,
+                ]);
+            }
         }
 
-        $car->make = $request->make;
-        $car->model = $request->model;
-        $car->year = $request->year;
-        $car->rental_price_per_day = $request->rental_price_per_day;
-        $car->number_of_seats = $request->number_of_seats;
-        $car->status = $request->status;
-        $car->fuel_type = $request->fuel_type;
-        $car->transmission = $request->transmission;
-        $car->consumption = $request->consumption;
-
-        $car->save();
-
-        return redirect()->route('cars.index')->with('success', 'Car updated successfully');
+        return redirect()->route('cars.index')->with('success', 'Car updated successfully.');
     }
     // Remove the specified resource from storage
     public function destroy($id)

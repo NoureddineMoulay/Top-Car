@@ -1,10 +1,18 @@
 @extends('layouts.carh')
 @section('title')
-    Reservation | {{$car->model}}
+    Reservation | {{ $car->model }}
 @endsection
 @section('content')
     <div class="container-reservation">
         <h1>Reserve Car</h1>
+
+
+        <div class="form-reserve" >
+            <div class="reserve-img">
+                <img  src="{{ asset('images/reserve.jpg')}}"alt="">
+            </div>
+
+            <div class="formy">
         <form action="{{ route('bookings.store') }}" method="POST">
             @csrf
             @auth
@@ -14,20 +22,17 @@
 
             <div class="form-group">
                 <label for="start_date">Start Date</label>
-                <input type="date" class="form-control" id="start_date" name="start_date" required>
+                <input type="date" class="form-control" id="start_date" name="start_date" min="{{ now()->format('Y-m-d') }}" required>
             </div>
 
             <div class="form-group">
                 <label for="end_date">End Date</label>
-                <input type="date" class="form-control" id="end_date" name="end_date" required>
+                <input type="date" class="form-control" id="end_date" min="{{ now()->format('Y-m-d') }}" name="end_date" required>
             </div>
 
-            <div class="form-group">
-                <label for="total_price">Total Price</label>
-                <input type="number" class="form-control" id="total_price" name="total_price" required>
-            </div>
-
-            <button type="submit" class="btn btn-primary">Proceed to Payment</button>
+            <button type="submit" class="btn-book "> Book now !</button>
         </form>
+            </div>
+        </div>
     </div>
 @endsection

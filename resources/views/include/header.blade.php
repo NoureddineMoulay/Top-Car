@@ -4,19 +4,24 @@
     <div class="overlay" data-overlay></div>
 
     <a href="#" class="logo">
-      <img src="./images/logo.svg" alt="Ridex logo">
+      <img src="{{asset('images/logo.png')}}" alt="Top Car logo" style="height:20px; margin-left:9px;">
     </a>
 
     <nav class="navbar" data-navbar>
       <ul class="navbar-list">
 
         <li>
-          <a href="#home" class="navbar-link selected-link" data-nav-link>Home</a>
+          <a href="{{ url('/') }}" class="navbar-link selected-link" data-nav-link>Home</a>
         </li>
 
         <li>
           <a href="#featured-car" class="navbar-link" data-nav-link>Our cars</a>
         </li>
+          @auth
+          <li>
+              <a href="{{ route('bookings.index') }}" class="navbar-link" data-nav-link>My Bookings</a>
+          </li>
+          @endauth
 
         <li>
           <a href="#" class="navbar-link" data-nav-link>About us</a>
@@ -62,7 +67,7 @@
                           </li>
                       </ul>
                   </label>
-                  <img src="{{ asset('images/' . $user->user_image) }}" alt="Profile Image">
+                  <img src="{{ asset('images/' . $user->user_image)}}" alt="Profile Image">
 
                   <div class="notifications">
     <span id="notification-bell">

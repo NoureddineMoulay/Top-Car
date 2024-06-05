@@ -36,7 +36,13 @@
                 @foreach($cars as $car)
                     <tr>
                         <td style="font-weight: 900;">{{ $car->id }}</td>
-                        <td><img src="{{ asset('storage/' . $car->car_image) }}" alt="{{ $car->make }} {{ $car->model }}" style="border-radius: 500%; height:50px; width: 50px; object-fit: cover;"></td>
+                        <td>
+                            @if($car->first_image())
+                                <img src="{{ asset($car->first_image()->image_path) }}" alt="{{ $car->make }} {{ $car->model }}" style="border-radius: 50%; height: 50px; width: 50px; object-fit: cover;">
+                            @else
+                                No image
+                            @endif
+                        </td>
                         <td>{{ $car->make }}</td>
                         <td>{{ $car->model }}</td>
                         <td>{{ $car->year }}</td>
@@ -51,9 +57,9 @@
                             <form action="{{ route('cars.destroy', $car->id) }}" method="POST" style="display:inline;">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit"><i class="fa-solid fa-trash-can"></i></button>
+                                <button type="submit" class="btnsEd"><i class="fa-solid fa-trash-can"></i></button>
                             </form>
-                            <button class="edit-button" data-id="{{ $car->id }}" data-make="{{ $car->make }}" data-model="{{ $car->model }}" data-year="{{ $car->year }}" data-price="{{ $car->rental_price_per_day }}" data-status="{{ $car->status }}" data-seats="{{ $car->number_of_seats }}" data-fuel="{{ $car->fuel_type }}" data-transmission="{{ $car->transmission }}" data-consumption="{{ $car->consumption }}" data-image="{{ $car->car_image }}"><i class="fa-solid fa-pen-to-square"></i></button>
+                            <button class="edit-button btnsEd" data-id="{{ $car->id }}" data-make="{{ $car->make }}" data-model="{{ $car->model }}" data-year="{{ $car->year }}" data-price="{{ $car->rental_price_per_day }}" data-status="{{ $car->status }}" data-seats="{{ $car->number_of_seats }}" data-fuel="{{ $car->fuel_type }}" data-transmission="{{ $car->transmission }}" data-consumption="{{ $car->consumption }}" data-image="{{ $car->car_image }}"><i class="fa-solid fa-pen-to-square"></i></button>
                         </td>
                     </tr>
                 @endforeach
@@ -92,7 +98,7 @@
             </div>
             <div class="input-box">
                 <span><i class="fa-solid fa-image"></i></span>
-                <input type="file" id="car_image" name="car_image" required>
+                <input type="file" id="car_image" name="car_images[]" multiple>
             </div>
             <div class="input-box">
                 <span><i class="fa-solid fa-dollar-sign"></i></span>
@@ -162,7 +168,7 @@
             </div>
             <div class="input-box">
                 <span><i class="fa-solid fa-image"></i></span>
-                <input type="file" id="editCarImage" name="car_image">
+                <input type="file" id="editCarImage" name="car_images[]" multiple>
             </div>
             <div class="input-box">
                 <span><i class="fa-solid fa-dollar-sign"></i></span>

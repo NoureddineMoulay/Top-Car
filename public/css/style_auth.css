@@ -2,11 +2,15 @@
 
 
 
+@import url('https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300..900;1,300..900&display=swap');
+
+
+
 *{
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: "Roboto Slab" ,serif;
+    font-family: "Figtree" ,serif;
 }
 :root{
     --cherry:#E23334;
@@ -40,12 +44,12 @@ body{
     justify-content:center;
     align-items: center;}
 .container .Login-container{
-    width: 400px;   
+    width: 400px;
     height: 400px;
     background-color: #ffff;
     padding:30px 20px 0 20px;
     border-radius: 10px;
-    position: relative; 
+    position: relative;
     border: 1px solid white;
     box-shadow: var(--shadow-1);
   }
@@ -71,7 +75,7 @@ body{
       align-items: center;
       height: 80%;
   }
-  
+
   .Login-container h2 {
    color: var(--grey-text);
    text-align: center;

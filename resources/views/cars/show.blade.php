@@ -6,23 +6,26 @@
 
 @section('content')
     <div class="container-show">
-        <h2><a href="#">Our Cars</a></h2>
+        <h2><a  style="display: inline-block;" href="#">Our Cars</a> > {{$car->model}}</h2>
         <section class="section-car">
             <div class="car-details-container">
                 <div class="main-car">
-                    <img src="{{ asset('storage/' . $car->car_image) }}" alt="{{ $car->name }}">
+                    <img src="{{ asset( $car->first_image()->image_path) }}" alt="{{ $car->model }}">
                 </div>
                 <div class="thumbnail-images">
-                    <img src="{{ asset('storage/' . $car->car_image) }}" alt="{{ $car->name }}">
-                    <img src="{{ asset('storage/' . $car->car_image) }}" alt="{{ $car->name }}">
-                    <img src="{{ asset('storage/' . $car->car_image) }}" alt="{{ $car->name }}">
+                    <img src="{{ asset($car->second_image()->image_path) }}" alt="{{ $car->model }}">
+                    <img src="{{ asset($car->third_image()->image_path)}}" alt="{{ $car->model }}">
+                    <img src="{{ asset( $car->fourth_image()->image_path)}}" alt="{{ $car->model }}">
                     <!-- Add more thumbnails if available -->
                 </div>
             </div>
         </section>
         <div class="name-location">
-            <h2>{{ $car->name }}</h2>
+            <h1 style="text-transform: uppercase; color:#2C1312;">{{ $car->model }}</h1>
+           <div class="stars"> @for ($i = 0; $i < $car->reviews->avg('rating'); $i++)
             <p style="font-weight: 700;"><i class="fa-solid fa-star start-icon"></i></p>
+            @endfor
+           </div>
             <p style="margin-top: 20px;font-size: 20px;font-weight: 700;">
                 <i style="margin-right: 10px;" class="fa-solid fa-location-dot"></i>{{ $car->location }}
             </p>
@@ -33,7 +36,7 @@
                     <span class="detail-icon"><i class="fa-solid fa-chair"></i></span>
                     <div class="details-text">
                         Seats
-                        <p>{{ $car->seats }} Seats</p>
+                        <p>{{ $car->number_of_seats}} Seats</p>
                     </div>
                 </div>
 
@@ -46,10 +49,10 @@
                 </div>
 
                 <div class="detail-box">
-                    <span class="detail-icon"><i class="fa-solid fa-gas-pump"></i></span>
+                    <span class="detail-icon"><i class="fa-solid fa-check"></i></span>
                     <div class="details-text">
-                        Fuel Type
-                        <p>{{ $car->fuel_type }}</p>
+                       Status
+                        <p>{{ $car->status }}</p>
                     </div>
                 </div>
 
@@ -89,26 +92,33 @@
                         @foreach ($car->reviews as $review)
                             <div class="review-section">
                                 <div class="customer-details">
+                                    <div class="split-delete">
                                     <div class="customer-pic">
-                                        <img src="{{ asset('images/user.png') }}" alt="User Avatar" style="height: 40px; width: 40px;">
+                                        <img src="{{ asset('images/' . $review->user->user_image)}}" alt="User Avatar" style="height: 40px; width: 40px;">
                                     </div>
                                     <div class="username-stars">
                                         <p>{{ $review->user->name }}</p>
+                                        <div class="stars">
                                         @for ($i = 0; $i < $review->rating; $i++)
                                             <span><i class="fa-solid fa-star"></i></span>
+
                                         @endfor
+                                        </div>
+                                     </div>
                                     </div>
+
+                                    @if (auth()->id() === $review->user_id)
+                                        <form action="{{ route('reviews.destroy', $review) }}" method="POST">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn-danger">Delete Review</button>
+                                        </form>
+                                    @endif
                                 </div>
                                 <div class="review-content">
                                     {{ $review->comment }}
                                 </div>
-                                @if (auth()->id() === $review->user_id)
-                                    <form action="{{ route('reviews.destroy', $review) }}" method="POST">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-danger">Delete Review</button>
-                                    </form>
-                                @endif
+
                             </div>
                         @endforeach
                     @else

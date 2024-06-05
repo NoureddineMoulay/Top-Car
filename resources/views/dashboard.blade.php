@@ -1,149 +1,97 @@
 @extends('layouts.dash')
 @section('title', 'Dashboard | Admin')
 
-@auth
-    @if(auth()->user()->role === 'admin')
-    @section('content')
-        <div class="filter-buttons">
-            <div class="title">
-                <h2>Cars</h2>
-            </div>
-            <div class="btn">
-                <input type="search" placeholder="Search..">
-                <button id="openModalButton" class="download-button">
-                    <i class="fa-solid fa-plus"></i> Add a new Car
-                </button>
+@section('content')
+    <div class="welcome-message">
+        <h2>Welcome Back, {{ auth()->user()->name }}</h2>
+    </div>
+    <div class="dashboard-summary">
+        <div class="summary-box">
+            <div class="box-content">
+                <span>Total Vehicles</span>
+                <h3>{{ $carCount }}</h3>
+                <div class="box-icon">
+                    <i class="fa-solid fa-car"></i>
+                </div>
             </div>
         </div>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Image</th>
-                    <th>Car ID</th>
-                    <th>Make</th>
-                    <th>Model</th>
-                    <th>Year</th>
-                    <th>Price for Rental</th>
-                    <th>Status</th>
-                    <th>Number of Seats</th>
-                    <th>Fuel</th>
-                    <th>Transmission</th>
-                    <th>Consumption</th>
-                </tr>
-            </thead>
-            <tbody>
-
-            </tbody>
-        </table>
-    @endsection
-    @else
-        <p>You are not authorized to access this page.</p>
-    @endif
-@endauth
-
-<!-- Modal -->
-<!-- Modal -->
-<div id="addCarModal" class="modal">
-
-        <div class="modal-content">
-            <span class="close" id="close-icon" onclick="hide()"><i class="fa-solid fa-circle-xmark"></i></span>
-
-        <h2>Add a New Car</h2>
-        <form action="{{ route('cars.store') }}" method="POST" id="addCarForm" class="form-body" enctype="multipart/form-data">
-            @csrf
-            <div class="input-box">
-                <span><i class="fa-solid fa-car"></i></span>
-                <input type="text" id="make" name="make" placeholder="Make" required>
+        <div class="summary-box">
+            <div class="box-content">
+                <span>Upcoming Bookings</span>
+                <h3>{{ $bookingCount }}</h3>
+                <div class="box-icon">
+                    <i class="fa-solid fa-calendar"></i>
+                </div>
             </div>
-            <div class="input-box">
-                <span><i class="fa-solid fa-car"></i></span>
-                <input type="text" id="model" name="model" placeholder="Model" required>
+        </div>
+        <div class="summary-box">
+            <div class="box-content">
+                <span>New Customers</span>
+                <h3>{{ $userCount }}</h3>
+                <div class="box-icon">
+                    <i class="fa-solid fa-user"></i>
+                </div>
             </div>
-            <div class="input-box">
-                <span><i class="fa-solid fa-calendar"></i></span>
-                <input type="number" id="year" name="year" placeholder="Year" required>
+        </div>
+        <div class="summary-box">
+            <div class="box-content">
+                <span>Total Transactions</span>
+                <h3>{{ $transactionCount }}</h3>
+                <div class="box-icon">
+                    <i class="fa-solid fa-dollar-sign"></i>
+                </div>
             </div>
-            <div class="input-box">
-                <span><i class="fa-solid fa-image"></i></span>
-                <input type="file" id="car_image" name="car_image" required>
-            </div>
-            <div class="input-box">
-                <span><i class="fa-solid fa-dollar-sign"></i></span>
-                <input type="number" id="rental_price_per_day" name="rental_price_per_day" placeholder="Rental Price per Day" required>
-            </div>
-            <div class="input-box">
-                <span><i class="fa-solid fa-seat"></i></span>
-                <input type="number" id="number_of_seats" name="number_of_seats" placeholder="Number of Seats" required>
-            </div>
-            <div class="input-box">
-                <span><i class="fa-solid fa-info-circle"></i></span>
-                <select id="status" name="status" required>
-                    <option value="" disabled selected>Select Status</option>
-                    <option value="available">Available</option>
-                    <option value="rented">Rented</option>
-                    <option value="maintenance">Maintenance</option>
-                </select>
-            </div>
-
-            <div class="input-box">
-                <span><i class="fa-solid fa-gas-pump"></i></span>
-                <select id="fuel_type" name="fuel_type" required>
-                    <option value="" disabled selected>Select Fuel Type</option>
-                    <option value="gazoil">Gazoil</option>
-                    <option value="petrol">Petrol</option>
-                    <option value="electric">Electric</option>
-                    <option value="hybrid">Hybrid</option>
-                </select>
-            </div>
-            <div class="input-box">
-                <span><i class="fa-solid fa-gear"></i></span>
-                <select id="transmission" name="transmission" required>
-                    <option value="" disabled selected>Select Transmission</option>
-                    <option value="automatic">Automatic</option>
-                    <option value="manual">Manual</option>
-                </select>
-            </div>
-            <div class="input-box">
-                <span><i class="fa-solid fa-gas-pump"></i></span>
-                <input type="number" id="consumption" name="consumption" placeholder="Consumption" required>
-            </div>
-            <button type="submit" class="btn">Add Car</button>
-        </form>
+        </div>
     </div>
-</div>
 
+    <div class="chart-container">
+        <canvas id="dashboardChart"></canvas>
+    </div>
+@endsection
 
-<!-- JavaScript to handle modal -->
-<!-- JavaScript to handle modal -->
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        // Get the modal
-        var modal = document.getElementById('addCarModal');
+@section('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const monthlyBookings = @json($monthlyBookings);
+        const monthlyTransactions = @json($monthlyTransactions);
 
-        // Get the button that opens the modal
-        var btn = document.getElementById("openModalButton");
+        console.log("Monthly Bookings:", monthlyBookings);
+        console.log("Monthly Transactions:", monthlyTransactions);
 
-        // Get the <span> element that closes the modal
-        var span = document.getElementsByClassName("close")[0];
+        const labels = Object.keys(monthlyBookings).map(month => new Date(0, month - 1).toLocaleString('default', { month: 'long' }));
+        const bookingData = Object.values(monthlyBookings);
+        const transactionData = Object.values(monthlyTransactions);
 
-        // When the user clicks the button, open the modal
-        btn.onclick = function() {
-            modal.style.display = "block";
-        }
+        console.log("Labels:", labels);
+        console.log("Booking Data:", bookingData);
+        console.log("Transaction Data:", transactionData);
 
-        // When the user clicks on <span> (x), close the modal
-        span.onclick = function() {
-            modal.style.display = "none";
-        }
-
-        window.onclick = function(event) {
-            if (event.target == modal) {
-                modal.style.display = "none";
+        const ctx = document.getElementById('dashboardChart').getContext('2d');
+        const dashboardChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels.length ? labels : ['No data'],
+                datasets: [{
+                    label: 'Bookings',
+                    data: bookingData.length ? bookingData : [0],
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1,
+                    fill: false
+                }, {
+                    label: 'Transactions',
+                    data: transactionData.length ? transactionData : [0],
+                    borderColor: 'rgba(153, 102, 255, 1)',
+                    borderWidth: 1,
+                    fill: false
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
             }
-        }
-    });
-</script>
-
-
-<!-- Styles for the modal -->
-
+        });
+    </script>
+@endsection
